@@ -1,0 +1,15 @@
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\EZ Host.exe.config
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\EZ Host.exe
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\EZ Host.pdb
+D:\Socket Programming\EZ Host\EZ Host\obj\Debug\EZ_Host.EzHostForm.resources
+D:\Socket Programming\EZ Host\EZ Host\obj\Debug\EZ_Host.Properties.Resources.resources
+D:\Socket Programming\EZ Host\EZ Host\obj\Debug\EZ Host.csproj.GenerateResource.Cache
+D:\Socket Programming\EZ Host\EZ Host\obj\Debug\EZ Host.exe
+D:\Socket Programming\EZ Host\EZ Host\obj\Debug\EZ Host.pdb
+D:\Socket Programming\EZ Host\EZ Host\obj\Debug\EZ Host.csprojResolveAssemblyReference.cache
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\zxing.dll
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\zxing.presentation.dll
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\zxing.pdb
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\zxing.xml
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\zxing.presentation.pdb
+D:\Socket Programming\EZ Host\EZ Host\bin\Debug\zxing.presentation.xml
