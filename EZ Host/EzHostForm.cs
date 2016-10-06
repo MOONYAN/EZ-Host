@@ -14,6 +14,7 @@ using ZXing;
 using ZXing.QrCode;
 using System.IO.Ports;
 using EZ_Host.ComField;
+using System.Net.Sockets;
 
 namespace EZ_Host
 {
@@ -21,7 +22,7 @@ namespace EZ_Host
     {
         private Server _server;
         private Thread _serverThread;
-        public JavaScriptSerializer _javaScriptSerializer;
+        private JavaScriptSerializer _javaScriptSerializer;
 
         public EzHostForm()
         {
@@ -55,10 +56,10 @@ namespace EZ_Host
             _qrPictureBox.Image = writer.Write(_server.ServerIP);
         }
 
-        private void HandleReceiveRequest(string requestString)
+        private void HandleReceiveRequest(FireRecord record)
         {
-            Console.WriteLine("--------Receive/n {0} ", requestString);
-            FireRecord record = _javaScriptSerializer.Deserialize<FireRecord>(requestString);
+            //Console.WriteLine("--------Receive/n {0} ", requestString);
+            //FireRecord record = _javaScriptSerializer.Deserialize<FireRecord>(requestString);
             Console.WriteLine(record.TransactionTime);
             Console.WriteLine(record.Uid);
             Console.WriteLine(record.Cart.Total);
@@ -88,10 +89,13 @@ namespace EZ_Host
 
         private void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            this.Invoke(new Action(() => _rfidDataGridView.DataSource = null));
+            _server.ComItemList = null;
             Thread.Sleep(100);
             string json = _serialPort.ReadExisting();
             List<ComItem> list = _javaScriptSerializer.Deserialize<List<ComItem>>(json);
-            this.Invoke(new Action(()=> _rfidDataGridView.DataSource = list));
+            _server.ComItemList = list;
+            this.Invoke(new Action(() => _rfidDataGridView.DataSource = list));
             Console.WriteLine(list.Count);
         }
     }

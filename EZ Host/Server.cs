@@ -9,6 +9,8 @@ using System.Net.Sockets;
 using System.Net;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using EZ_Host.ComField;
+using EZ_Host.FireField;
 
 namespace EZ_Host
 {
@@ -17,10 +19,12 @@ namespace EZ_Host
         //private JavaScriptSerializer _javaScriptSerializer;
         private ManualResetEvent _manualResetEvent;
         private String _serverIP = "Server IP = none set";
-        public delegate void ReceiveRequestHandler(String requestString);
+        public delegate void ReceiveRequestHandler(FireRecord record);
         public event ReceiveRequestHandler _receiveRequestEvent;
         public event PropertyChangedEventHandler PropertyChanged;
-        private IPEndPoint _localEndPoint ;
+        private IPEndPoint _localEndPoint;
+        private JavaScriptSerializer _javaScriptSerializer;
+        public List<ComItem> ComItemList { get; set; }
 
         public Server()
         {
@@ -108,10 +112,34 @@ namespace EZ_Host
                 content = state._stringBuilder.ToString();
 
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
-                NotifyReceiveRequestEvent(content);
+                FireRecord record = _javaScriptSerializer.Deserialize<FireRecord>(content);
+                NotifyReceiveRequestEvent(record);
+
+                //HandleComparison(handler, record.Cart.ItemList);
                 //Person person = _serializer.Deserialize<Person>(content);
                 Send(handler, "Success");
             }
+        }
+
+        private void HandleComparison(Socket handler, List<FireItem> itemList)
+        {
+            if (ComItemList != null && ComItemList.Count == itemList.Count)
+            {
+                List<ComItem> clientList = itemList.Select(e => new ComItem() { Count = e.Count, Id = e.ProductId }).ToList();
+                clientList.Sort();
+                ComItemList.Sort();
+                for (int i = 0; i < clientList.Count; i++)
+                {
+                    if(clientList[i].Id != ComItemList[i].Id || clientList[i].Count != ComItemList[i].Count )
+                    {
+                        Send(handler, "has not read rfid");
+                        return;
+                    }
+                }
+                Send(handler, "Success");
+                return;
+            }
+            Send(handler, "has not read rfid");
         }
 
         private void Send(Socket handler, string data)
@@ -143,9 +171,9 @@ namespace EZ_Host
             }
         }
 
-        private void NotifyReceiveRequestEvent(String requestString)
+        private void NotifyReceiveRequestEvent(FireRecord record)
         {
-            _receiveRequestEvent?.Invoke(requestString);
+            _receiveRequestEvent?.Invoke(record);
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -162,7 +190,7 @@ namespace EZ_Host
             private set
             {
                 _serverIP = value;
-                NotifyPropertyChanged();                
+                NotifyPropertyChanged();
             }
         }
     }
