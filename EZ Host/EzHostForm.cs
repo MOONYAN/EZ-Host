@@ -12,6 +12,8 @@ using System.Web.Script.Serialization;
 using EZ_Host.FireField;
 using ZXing;
 using ZXing.QrCode;
+using System.IO.Ports;
+using EZ_Host.ComField;
 
 namespace EZ_Host
 {
@@ -35,6 +37,7 @@ namespace EZ_Host
             _server._receiveRequestEvent += HandleReceiveRequest;
             _serverIPLabel.DataBindings.Add("Text", _server, "ServerIP");
             InitializeQR();
+            _portComboBox.DataSource = SerialPort.GetPortNames();
             _serverThread.Start();
         }
 
@@ -54,7 +57,7 @@ namespace EZ_Host
 
         private void HandleReceiveRequest(string requestString)
         {
-            Console.WriteLine("--------Receive/n {0} ", requestString);            
+            Console.WriteLine("--------Receive/n {0} ", requestString);
             FireRecord record = _javaScriptSerializer.Deserialize<FireRecord>(requestString);
             Console.WriteLine(record.TransactionTime);
             Console.WriteLine(record.Uid);
@@ -68,11 +71,28 @@ namespace EZ_Host
                 Console.WriteLine(item.UnitPrice);
                 Console.WriteLine(item.Subtotal);
             }
-            if(this.InvokeRequired)
+            if (this.InvokeRequired)
             {
-                this.Invoke(new Action(()=> _itemDataGridView.DataSource = record.Cart.ItemList));
+                this.Invoke(new Action(() => _clientDataGridView.DataSource = record.Cart.ItemList));
             }
             //_itemDataGridView.DataSource = record.Cart.ItemList;
+        }
+
+        private void _openPortButton_Click(object sender, EventArgs e)
+        {
+            _serialPort.PortName = _portComboBox.Text;
+            _serialPort.Open();
+            Console.WriteLine(_serialPort.PortName + " is opened");
+            _openPortButton.Enabled = false;
+        }
+
+        private void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            Thread.Sleep(100);
+            string json = _serialPort.ReadExisting();
+            List<ComItem> list = _javaScriptSerializer.Deserialize<List<ComItem>>(json);
+            this.Invoke(new Action(()=> _rfidDataGridView.DataSource = list));
+            Console.WriteLine(list.Count);
         }
     }
 }

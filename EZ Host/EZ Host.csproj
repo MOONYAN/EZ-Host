@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComField\ComItem.cs" />
     <Compile Include="EzHostForm.cs">
       <SubType>Form</SubType>
     </Compile>
