@@ -21,6 +21,8 @@ namespace EZ_Host
         private String _serverIP = "Server IP = none set";
         public delegate void ReceiveRequestHandler(FireRecord record);
         public event ReceiveRequestHandler _receiveRequestEvent;
+        public delegate void CompareResultHandler(String message);
+        public event CompareResultHandler _compareResultEvent;
         public event PropertyChangedEventHandler PropertyChanged;
         private IPEndPoint _localEndPoint;
         private JavaScriptSerializer _javaScriptSerializer;
@@ -28,6 +30,7 @@ namespace EZ_Host
 
         public Server()
         {
+            _javaScriptSerializer = new JavaScriptSerializer();
             //_javaScriptSerializer = new JavaScriptSerializer();
             _manualResetEvent = new ManualResetEvent(false);
 
@@ -115,9 +118,9 @@ namespace EZ_Host
                 FireRecord record = _javaScriptSerializer.Deserialize<FireRecord>(content);
                 NotifyReceiveRequestEvent(record);
 
-                //HandleComparison(handler, record.Cart.ItemList);
+                HandleComparison(handler, record.Cart.ItemList);
                 //Person person = _serializer.Deserialize<Person>(content);
-                Send(handler, "Success");
+                //Send(handler, "Success");
             }
         }
 
@@ -127,19 +130,23 @@ namespace EZ_Host
             {
                 List<ComItem> clientList = itemList.Select(e => new ComItem() { Count = e.Count, Id = e.ProductId }).ToList();
                 clientList.Sort();
-                ComItemList.Sort();
+                ComItemList.Sort();                
+                
                 for (int i = 0; i < clientList.Count; i++)
                 {
                     if(clientList[i].Id != ComItemList[i].Id || clientList[i].Count != ComItemList[i].Count )
                     {
-                        Send(handler, "has not read rfid");
+                        NotifyCompareResultEvent("inconsist");
+                        Send(handler, "inconsist");
                         return;
                     }
                 }
+                NotifyCompareResultEvent("Success");
                 Send(handler, "Success");
                 return;
             }
-            Send(handler, "has not read rfid");
+            NotifyCompareResultEvent("inconsist");
+            Send(handler, "inconsist");
         }
 
         private void Send(Socket handler, string data)
@@ -174,6 +181,12 @@ namespace EZ_Host
         private void NotifyReceiveRequestEvent(FireRecord record)
         {
             _receiveRequestEvent?.Invoke(record);
+        }
+
+        private void NotifyCompareResultEvent(String message)
+        {
+            _compareResultEvent?.Invoke(message);
+
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")

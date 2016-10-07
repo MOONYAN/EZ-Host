@@ -28,3 +28,18 @@ D:\EZ Host\EZ Host\obj\Debug\EZ Host.csprojResolveAssemblyReference.cache
 D:\EZ Host\EZ Host\obj\Debug\EZ_Host.EzHostForm.resources
 D:\EZ Host\EZ Host\obj\Debug\EZ_Host.Properties.Resources.resources
 D:\EZ Host\EZ Host\obj\Debug\EZ Host.csproj.GenerateResource.Cache
+D:\EZ-Host\EZ Host\bin\Debug\EZ Host.exe.config
+D:\EZ-Host\EZ Host\obj\Debug\EZ Host.exe
+D:\EZ-Host\EZ Host\obj\Debug\EZ Host.pdb
+D:\EZ-Host\EZ Host\bin\Debug\EZ Host.exe
+D:\EZ-Host\EZ Host\bin\Debug\EZ Host.pdb
+D:\EZ-Host\EZ Host\bin\Debug\zxing.dll
+D:\EZ-Host\EZ Host\bin\Debug\zxing.presentation.dll
+D:\EZ-Host\EZ Host\bin\Debug\zxing.pdb
+D:\EZ-Host\EZ Host\bin\Debug\zxing.xml
+D:\EZ-Host\EZ Host\bin\Debug\zxing.presentation.pdb
+D:\EZ-Host\EZ Host\bin\Debug\zxing.presentation.xml
+D:\EZ-Host\EZ Host\obj\Debug\EZ Host.csprojResolveAssemblyReference.cache
+D:\EZ-Host\EZ Host\obj\Debug\EZ_Host.EzHostForm.resources
+D:\EZ-Host\EZ Host\obj\Debug\EZ_Host.Properties.Resources.resources
+D:\EZ-Host\EZ Host\obj\Debug\EZ Host.csproj.GenerateResource.Cache

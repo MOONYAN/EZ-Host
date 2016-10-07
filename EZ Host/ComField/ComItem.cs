@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace EZ_Host.ComField
 {
-    class ComItem
+    class ComItem: IComparable<ComItem>
     {
         public string Id { get; set; }
         public int Count { get; set; }
+
+        public int CompareTo(ComItem other)
+        {
+            return this.Id.CompareTo(other.Id);
+        }
     }
 }

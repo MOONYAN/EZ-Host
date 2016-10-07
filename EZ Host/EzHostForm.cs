@@ -36,10 +36,16 @@ namespace EZ_Host
         private void EzHostForm_Load(object sender, EventArgs e)
         {
             _server._receiveRequestEvent += HandleReceiveRequest;
-            _serverIPLabel.DataBindings.Add("Text", _server, "ServerIP");
+            _server._compareResultEvent += HandleCompareResult;
+            _serverGroupBox.DataBindings.Add("Text", _server, "ServerIP");
             InitializeQR();
             _portComboBox.DataSource = SerialPort.GetPortNames();
             _serverThread.Start();
+        }
+
+        private void HandleCompareResult(string message)
+        {
+            this.Invoke(new Action(() => _stateLabel.Text = message));
         }
 
         private void InitializeQR()
@@ -58,25 +64,10 @@ namespace EZ_Host
 
         private void HandleReceiveRequest(FireRecord record)
         {
-            //Console.WriteLine("--------Receive/n {0} ", requestString);
-            //FireRecord record = _javaScriptSerializer.Deserialize<FireRecord>(requestString);
-            Console.WriteLine(record.TransactionTime);
-            Console.WriteLine(record.Uid);
-            Console.WriteLine(record.Cart.Total);
-            foreach (FireItem item in record.Cart.ItemList)
-            {
-                Console.WriteLine(item.Name);
-                Console.WriteLine(item.ImageURL);
-                Console.WriteLine(item.Count);
-                Console.WriteLine(item.ProductId);
-                Console.WriteLine(item.UnitPrice);
-                Console.WriteLine(item.Subtotal);
-            }
             if (this.InvokeRequired)
             {
                 this.Invoke(new Action(() => _clientDataGridView.DataSource = record.Cart.ItemList));
             }
-            //_itemDataGridView.DataSource = record.Cart.ItemList;
         }
 
         private void _openPortButton_Click(object sender, EventArgs e)
@@ -89,6 +80,7 @@ namespace EZ_Host
 
         private void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+            this.Invoke(new Action(() => _clientDataGridView.DataSource = null));
             this.Invoke(new Action(() => _rfidDataGridView.DataSource = null));
             _server.ComItemList = null;
             Thread.Sleep(100);
